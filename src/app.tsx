@@ -1,34 +1,42 @@
-import { useState } from "react";
-import reactLogo from "./assets/react.svg";
-import viteLogo from "/vite.svg";
 import "./app.css";
+import { hurricaneLivestreamList } from "./data";
+
+type Video = { videoId: string; title: string };
+
+interface YouTubeLiveProps {
+  video: Video;
+}
+
+const YouTubeLive: React.FC<YouTubeLiveProps> = ({ video }) => {
+  return (
+    <div className="relative aspect-video w-full">
+      <iframe
+        className="absolute top-0 left-0 w-full h-full rounded-xl"
+        src={`https://www.youtube.com/embed/${video.videoId}?autoplay=1&mute=1`}
+        title={video.title ?? "YouTube Live Stream"}
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        allowFullScreen
+      ></iframe>
+    </div>
+  );
+};
 
 function App() {
-  const [count, setCount] = useState(0);
-
   return (
-    <>
-      <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
+    <div className="px-4">
+      <header className="text-center my-2">
+        <h1 className="mt-2 text-xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-2xl">
+          CCTV Feed
+        </h1>
+      </header>
+      <div className="grid grid-cols-2 gap-2">
+        {hurricaneLivestreamList.map(
+          (hurricaneLivestream: any, idx: number) => (
+            <YouTubeLive key={idx} video={hurricaneLivestream} />
+          )
+        )}
       </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.tsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-    </>
+    </div>
   );
 }
 
