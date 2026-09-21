@@ -1,0 +1,7 @@
+# Keep LF line endings in the repo and working tree on every OS, so Prettier
+# checks behave the same on Windows as in CI.
+* text=auto eol=lf
+
+*.png binary
+*.jpg binary
+*.ico binary

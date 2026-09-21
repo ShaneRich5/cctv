@@ -36,7 +36,7 @@ export function FeedPlayer({ feed, interactive = false, onStatus }: PlayerProps)
           className="absolute inset-0 h-full w-full border-0"
           allow="autoplay; fullscreen"
           loading="lazy"
-          tabIndex={interactive ? 0 : -1}
+          tabIndex={interactive ? undefined : -1}
           onLoad={() => onStatus("live")}
         />
       );
@@ -48,6 +48,20 @@ const YOUTUBE_ORIGINS = new Set(["https://www.youtube-nocookie.com", "https://ww
 // YouTube player states from the IFrame API.
 const PLAYING = 1;
 const ENDED = 0;
+
+interface PlayerMessage {
+  event?: unknown;
+  info?: unknown;
+}
+
+function parsePlayerMessage(data: unknown): PlayerMessage | null {
+  try {
+    const parsed: unknown = typeof data === "string" ? JSON.parse(data) : data;
+    return typeof parsed === "object" && parsed !== null ? parsed : null;
+  } catch {
+    return null;
+  }
+}
 
 function YouTubePlayer({
   videoId,
@@ -77,25 +91,23 @@ function YouTubePlayer({
       else if (state === ENDED) onStatus("offline");
     };
 
-    const onMessage = (event: MessageEvent) => {
+    const onMessage = (event: MessageEvent<unknown>) => {
       if (event.source !== frame.current?.contentWindow) return;
       if (!YOUTUBE_ORIGINS.has(event.origin)) return;
-      let data: { event?: string; info?: unknown };
-      try {
-        data = typeof event.data === "string" ? JSON.parse(event.data) : event.data;
-      } catch {
-        return;
-      }
+      const message = parsePlayerMessage(event.data);
+      if (!message) return;
       if (!heard) {
         heard = true;
         send({ event: "command", func: "addEventListener", args: ["onStateChange"] });
         send({ event: "command", func: "addEventListener", args: ["onError"] });
       }
-      if (data.event === "onError") onStatus("offline");
-      else if (data.event === "onStateChange") applyState(data.info);
-      else if (data.event === "initialDelivery" || data.event === "infoDelivery") {
-        const info = data.info as { playerState?: number } | null;
-        applyState(info?.playerState);
+      if (message.event === "onError") onStatus("offline");
+      else if (message.event === "onStateChange") applyState(message.info);
+      else if (message.event === "initialDelivery" || message.event === "infoDelivery") {
+        const { info } = message;
+        if (typeof info === "object" && info !== null && "playerState" in info) {
+          applyState(info.playerState);
+        }
       }
     };
 
@@ -139,7 +151,7 @@ function YouTubePlayer({
       allow="autoplay; encrypted-media; picture-in-picture; fullscreen"
       referrerPolicy="strict-origin-when-cross-origin"
       loading="lazy"
-      tabIndex={interactive ? 0 : -1}
+      tabIndex={interactive ? undefined : -1}
       allowFullScreen={interactive}
     />
   );

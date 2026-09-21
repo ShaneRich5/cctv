@@ -45,22 +45,30 @@ export function useSignalLoss(ids: string[], enabled: boolean) {
       timers.add(id);
     };
     const clear = (id: string) =>
-      setEvents((current) => {
-        const next = { ...current };
-        delete next[id];
-        return next;
-      });
+      setEvents((current) =>
+        Object.fromEntries(Object.entries(current).filter(([key]) => key !== id)),
+      );
 
-    const next = () =>
-      later(() => {
-        const id = candidates[Math.floor(Math.random() * candidates.length)];
-        setEvents((current) => ({ ...current, [id]: "lost" }));
-        later(() => {
+    const drop = (id: string) => {
+      setEvents((current) => ({ ...current, [id]: "lost" }));
+      later(
+        () => {
           setEvents((current) => ({ ...current, [id]: "recovering" }));
           later(() => clear(id), 900);
-        }, random(1800, 5200));
-        next();
-      }, random(7000, 17000));
+        },
+        random(1800, 5200),
+      );
+    };
+
+    const next = () =>
+      later(
+        () => {
+          const id = candidates[Math.floor(Math.random() * candidates.length)];
+          if (id !== undefined) drop(id);
+          next();
+        },
+        random(7000, 17000),
+      );
 
     next();
     return () => {
@@ -90,7 +98,8 @@ export function pickUnstable(ids: string[], seed: number): Set<string> {
   const pool = [...ids];
   const picked = new Set<string>();
   while (picked.size < count && pool.length) {
-    picked.add(pool.splice(Math.floor(rand() * pool.length), 1)[0]);
+    const [id] = pool.splice(Math.floor(rand() * pool.length), 1);
+    if (id !== undefined) picked.add(id);
   }
   return picked;
 }

@@ -1,8 +1,8 @@
 import { useEffect, useRef, useState } from "react";
 import { CATEGORY_LABELS, type Feed, type FeedStatus } from "../feeds";
 import { channelLabel } from "../lib/view";
-import { FeedPlayer } from "./FeedPlayer";
-import { CrtLayers, Osd, StaticScreen } from "./Monitor";
+import { FeedPlayer } from "./feed-player";
+import { CrtLayers, Osd, StaticScreen } from "./monitor";
 
 interface FocusViewProps {
   feed: Feed;
@@ -15,7 +15,16 @@ interface FocusViewProps {
   onShare: () => void;
 }
 
-export function FocusView({ feed, channel, total, cctv, onPrev, onNext, onClose, onShare }: FocusViewProps) {
+export function FocusView({
+  feed,
+  channel,
+  total,
+  cctv,
+  onPrev,
+  onNext,
+  onClose,
+  onShare,
+}: FocusViewProps) {
   const closeButton = useRef<HTMLButtonElement>(null);
   const currentId = useRef(feed.id);
 
@@ -48,13 +57,22 @@ export function FocusView({ feed, channel, total, cctv, onPrev, onNext, onClose,
     >
       <div className="flex items-center gap-3 px-4 py-3">
         <div className="min-w-0 flex-1">
-          <p className={`truncate ${cctv ? "font-mono text-sm uppercase tracking-wider text-accent" : "font-medium"}`}>
+          <p
+            className={`truncate ${cctv ? "font-mono text-sm tracking-wider text-accent uppercase" : "font-medium"}`}
+          >
             {cctv && <span className="mr-2 text-muted">{channelLabel(channel)}</span>}
             {feed.name}
           </p>
-          <p className={`truncate text-xs ${cctv ? "font-mono uppercase tracking-wider text-muted" : "text-white/60"}`}>
+          <p
+            className={`truncate text-xs ${cctv ? "font-mono tracking-wider text-muted uppercase" : "text-white/60"}`}
+          >
             {feed.place}, {feed.parish} · {CATEGORY_LABELS[feed.category]} · via{" "}
-            <a href={feed.provider.url} target="_blank" rel="noreferrer" className="underline underline-offset-2 hover:text-accent">
+            <a
+              href={feed.provider.url}
+              target="_blank"
+              rel="noreferrer"
+              className="underline underline-offset-2 hover:text-accent"
+            >
               {feed.provider.name}
             </a>
           </p>
@@ -62,33 +80,45 @@ export function FocusView({ feed, channel, total, cctv, onPrev, onNext, onClose,
         <button type="button" className="btn" onClick={onShare}>
           Share
         </button>
-        <a className="btn hidden sm:inline-flex" href={feed.sourceUrl} target="_blank" rel="noreferrer">
+        <a
+          className="btn hidden sm:inline-flex"
+          href={feed.sourceUrl}
+          target="_blank"
+          rel="noreferrer"
+        >
           Source ↗
         </a>
-        <button ref={closeButton} type="button" className="btn" onClick={onClose} aria-label="Close focus view">
+        <button
+          ref={closeButton}
+          type="button"
+          className="btn"
+          onClick={onClose}
+          aria-label="Close focus view"
+        >
           ✕<span className="hidden sm:inline">Close</span>
         </button>
       </div>
 
       <div className="relative flex min-h-0 flex-1 items-center justify-center px-2 sm:px-20">
-        {multiple && (
-          <SideButton direction="prev" onClick={onPrev} cctv={cctv} />
-        )}
+        {multiple && <SideButton direction="prev" onClick={onPrev} cctv={cctv} />}
         <div className="w-full" style={{ maxWidth: "calc((100dvh - 8.5rem) * 16 / 9)" }}>
           <FocusScreen key={feed.id} feed={feed} channel={channel} cctv={cctv} />
         </div>
-        {multiple && (
-          <SideButton direction="next" onClick={onNext} cctv={cctv} />
-        )}
+        {multiple && <SideButton direction="next" onClick={onNext} cctv={cctv} />}
       </div>
 
       <div
         className={`flex items-center justify-center gap-3 px-4 py-3 text-xs ${
-          cctv ? "font-mono uppercase tracking-wider text-muted" : "text-white/60"
+          cctv ? "font-mono tracking-wider text-muted uppercase" : "text-white/60"
         }`}
       >
         {multiple && (
-          <button type="button" className="btn sm:hidden" onClick={onPrev} aria-label="Previous feed">
+          <button
+            type="button"
+            className="btn sm:hidden"
+            onClick={onPrev}
+            aria-label="Previous feed"
+          >
             ‹
           </button>
         )}
@@ -106,7 +136,15 @@ export function FocusView({ feed, channel, total, cctv, onPrev, onNext, onClose,
   );
 }
 
-function SideButton({ direction, onClick, cctv }: { direction: "prev" | "next"; onClick: () => void; cctv: boolean }) {
+function SideButton({
+  direction,
+  onClick,
+  cctv,
+}: {
+  direction: "prev" | "next";
+  onClick: () => void;
+  cctv: boolean;
+}) {
   const prev = direction === "prev";
   return (
     <button

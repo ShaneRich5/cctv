@@ -1,7 +1,7 @@
 import { resolve } from "node:path";
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
 import tailwindcss from "@tailwindcss/vite";
+import react from "@vitejs/plugin-react";
+import { defineConfig } from "vitest/config";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -22,5 +22,12 @@ export default defineConfig({
         about: resolve(import.meta.dirname, "about.html"),
       },
     },
+  },
+  test: {
+    environment: "happy-dom",
+    environmentOptions: {
+      happyDOM: { url: "http://localhost:5173/cctv/" },
+    },
+    include: ["src/**/*.test.ts"],
   },
 });

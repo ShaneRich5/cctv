@@ -1,14 +1,28 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
-import { ChannelsPanel } from "./components/ChannelsPanel";
-import { Header, StatusBar, Toast } from "./components/Chrome";
-import { FocusView } from "./components/FocusView";
-import { ViewsPanel } from "./components/ViewsPanel";
-import { Wall } from "./components/Wall";
+import { ChannelsPanel } from "./components/channels-panel";
+import { Header, StatusBar, Toast } from "./components/chrome";
+import { FocusView } from "./components/focus-view";
+import { ViewsPanel } from "./components/views-panel";
+import { Wall } from "./components/wall";
 import { FEED_BY_ID, type FeedStatus } from "./feeds";
 import { copyText } from "./lib/clipboard";
 import { pickUnstable, useReducedMotion, useSignalLoss, useViewportWidth } from "./lib/hooks";
-import { deleteSavedView, loadSavedViews, saveView, startupView, type SavedView } from "./lib/storage";
-import { DEFAULT_VIEW, decodeView, encodeView, sameView, shareUrl, viewCode, type ViewState } from "./lib/view";
+import {
+  deleteSavedView,
+  loadSavedViews,
+  saveView,
+  startupView,
+  type SavedView,
+} from "./lib/storage";
+import {
+  DEFAULT_VIEW,
+  decodeView,
+  encodeView,
+  sameView,
+  shareUrl,
+  viewCode,
+  type ViewState,
+} from "./lib/view";
 
 type Panel = "channels" | "views" | null;
 
@@ -29,7 +43,7 @@ export default function App() {
 
   const cctv = view.mode === "cctv";
   const focusIndex = view.focus ? view.feeds.indexOf(view.focus) : -1;
-  const focusFeed = focusIndex >= 0 ? FEED_BY_ID.get(view.feeds[focusIndex]) : undefined;
+  const focusFeed = view.focus && focusIndex >= 0 ? FEED_BY_ID.get(view.focus) : undefined;
 
   // The address bar always holds the share link for what's on screen.
   useEffect(() => {
@@ -52,7 +66,9 @@ export default function App() {
   }, [view.mode]);
 
   useEffect(() => {
-    document.title = focusFeed ? `${focusFeed.name} · JA·CCTV` : "JA·CCTV · Public cameras across Jamaica";
+    document.title = focusFeed
+      ? `${focusFeed.name} · JA·CCTV`
+      : "JA·CCTV · Public cameras across Jamaica";
   }, [focusFeed]);
 
   useEffect(() => {
@@ -71,7 +87,10 @@ export default function App() {
         return;
       }
       if (panel) return;
-      if ((event.target as HTMLElement).closest("input, textarea, select, [contenteditable='true']")) return;
+      if (
+        (event.target as HTMLElement).closest("input, textarea, select, [contenteditable='true']")
+      )
+        return;
 
       if (hasFocus && (event.key === "ArrowLeft" || event.key === "ArrowRight")) {
         event.preventDefault();
@@ -97,8 +116,10 @@ export default function App() {
 
   const update = (patch: Partial<ViewState>) => setView((current) => ({ ...current, ...patch }));
 
-  const copy = async (text: string, message: string) => {
-    setToast((await copyText(text)) ? message : "Couldn't copy. Copy the link from the address bar.");
+  const copy = (text: string, message: string) => {
+    void copyText(text).then((copied) => {
+      setToast(copied ? message : "Couldn't copy. Copy the link from the address bar.");
+    });
   };
 
   return (
@@ -139,7 +160,11 @@ export default function App() {
       )}
 
       {panel === "channels" && (
-        <ChannelsPanel feeds={view.feeds} onChange={(feeds) => update({ feeds })} onClose={() => setPanel(null)} />
+        <ChannelsPanel
+          feeds={view.feeds}
+          onChange={(feeds) => update({ feeds })}
+          onClose={() => setPanel(null)}
+        />
       )}
 
       {panel === "views" && (
@@ -150,7 +175,11 @@ export default function App() {
           onSave={(name) => {
             const next = saveView(view, name);
             if (next) setSaved(next);
-            setToast(next ? "View saved to this browser" : "Couldn't save. Browser storage is unavailable.");
+            setToast(
+              next
+                ? "View saved to this browser"
+                : "Couldn't save. Browser storage is unavailable.",
+            );
           }}
           onLoad={(state) => {
             setView(state);
@@ -174,5 +203,5 @@ function stepFocus(view: ViewState, delta: number): ViewState {
   const index = view.focus ? view.feeds.indexOf(view.focus) : -1;
   if (index < 0) return view;
   const count = view.feeds.length;
-  return { ...view, focus: view.feeds[(index + delta + count) % count] };
+  return { ...view, focus: view.feeds[(index + delta + count) % count] ?? null };
 }

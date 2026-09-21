@@ -1,10 +1,13 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import About from "./about-page.tsx";
+import About from "./about-page";
 
-createRoot(document.getElementById("root")!).render(
+const root = document.getElementById("root");
+if (!root) throw new Error("Missing #root element");
+
+createRoot(root).render(
   <StrictMode>
     <About />
-  </StrictMode>
+  </StrictMode>,
 );

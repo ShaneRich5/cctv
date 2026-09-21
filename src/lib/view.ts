@@ -26,11 +26,7 @@ export const DEFAULT_VIEW: ViewState = {
 // padding, so the same view always produces the same string.
 // e.g. "m=cctv&c=auto&f=hwt.dvh.kgh&z=dvh"
 export function encodeView(view: ViewState): string {
-  const parts = [
-    `m=${view.mode}`,
-    `c=${view.cols || "auto"}`,
-    `f=${view.feeds.join(".")}`,
-  ];
+  const parts = [`m=${view.mode}`, `c=${view.cols || "auto"}`, `f=${view.feeds.join(".")}`];
   if (view.focus) parts.push(`z=${view.focus}`);
   return parts.join("&");
 }
@@ -97,12 +93,7 @@ export function shareUrl(view: ViewState): string {
 export const channelLabel = (channel: number) => `CAM ${String(channel).padStart(2, "0")}`;
 
 // Column count actually used, given the choice, feed count and screen width.
-export function effectiveColumns(
-  cols: Columns,
-  count: number,
-  width: number,
-  mode: Mode,
-): number {
+export function effectiveColumns(cols: Columns, count: number, width: number, mode: Mode): number {
   const maxForWidth = width < 640 ? 1 : width < 1024 ? 2 : width < 1440 ? 4 : 5;
   const auto = count <= 1 ? 1 : count <= 4 ? 2 : count <= 9 ? 3 : count <= 16 ? 4 : 5;
   let result = Math.min(cols || auto, maxForWidth);

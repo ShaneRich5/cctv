@@ -33,15 +33,15 @@ export function Osd({
 }) {
   return (
     <div aria-hidden className="osd pointer-events-none absolute inset-0">
-      <span className="absolute left-[4%] top-[5%]">{channelLabel(channel)}</span>
-      <span className="absolute right-[4%] top-[5%]">
+      <span className="absolute top-[5%] left-[4%]">{channelLabel(channel)}</span>
+      <span className="absolute top-[5%] right-[4%]">
         <OsdClock />
       </span>
       <span className="absolute bottom-[5%] left-[4%] max-w-[62%] truncate uppercase">
         {feed.name}
         <span className="block truncate opacity-70">{feed.parish}</span>
       </span>
-      <span className="absolute bottom-[5%] right-[4%] flex items-center gap-[0.35em]">
+      <span className="absolute right-[4%] bottom-[5%] flex items-center gap-[0.35em]">
         {status === "live" && (
           <>
             <span className="rec-dot" />
@@ -49,7 +49,9 @@ export function Osd({
           </>
         )}
         {status === "connecting" && <span className="blink">SYNC</span>}
-        {(status === "offline" || status === "lost") && <span className="text-[#ff6b60]">LOSS</span>}
+        {(status === "offline" || status === "lost") && (
+          <span className="text-[#ff6b60]">LOSS</span>
+        )}
       </span>
     </div>
   );
@@ -93,7 +95,7 @@ export function DeadMonitor({ channel, variant }: { channel: number; variant: "s
             <div className="absolute inset-0 grid place-items-center">
               <div className="osd-banner bg-black/75 px-[5%] py-[2%]">NO INPUT</div>
             </div>
-            <span className="osd absolute left-[4%] top-[5%]">{channelLabel(channel)}</span>
+            <span className="osd absolute top-[5%] left-[4%]">{channelLabel(channel)}</span>
           </div>
         )}
         <CrtLayers />

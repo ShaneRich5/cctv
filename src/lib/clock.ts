@@ -7,11 +7,14 @@ let now = Date.now();
 let timer: number | undefined;
 
 function schedule() {
-  timer = window.setTimeout(() => {
-    now = Date.now();
-    listeners.forEach((listener) => listener());
-    schedule();
-  }, 1000 - (Date.now() % 1000));
+  timer = window.setTimeout(
+    () => {
+      now = Date.now();
+      listeners.forEach((listener) => listener());
+      schedule();
+    },
+    1000 - (Date.now() % 1000),
+  );
 }
 
 function subscribe(listener: () => void) {

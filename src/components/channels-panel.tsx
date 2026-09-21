@@ -1,6 +1,6 @@
 import { CATEGORY_LABELS, FEEDS, FEED_BY_ID, type Category, type Feed } from "../feeds";
 import { DEFAULT_VIEW, channelLabel } from "../lib/view";
-import { Drawer, Section } from "./Drawer";
+import { Drawer, Section } from "./drawer";
 
 interface ChannelsPanelProps {
   feeds: string[];
@@ -17,6 +17,7 @@ export function ChannelsPanel({ feeds, onChange, onClose }: ChannelsPanelProps) 
   const move = (index: number, delta: number) => {
     const next = [...feeds];
     const [id] = next.splice(index, 1);
+    if (id === undefined) return;
     next.splice(index + delta, 0, id);
     onChange(next);
   };
@@ -34,7 +35,9 @@ export function ChannelsPanel({ feeds, onChange, onClose }: ChannelsPanelProps) 
         <button
           type="button"
           className="btn"
-          onClick={() => onChange(FEEDS.filter((feed) => feed.category !== "weather").map((feed) => feed.id))}
+          onClick={() =>
+            onChange(FEEDS.filter((feed) => feed.category !== "weather").map((feed) => feed.id))
+          }
         >
           Cameras only
         </button>
@@ -50,10 +53,16 @@ export function ChannelsPanel({ feeds, onChange, onClose }: ChannelsPanelProps) 
           <ol className="divide-y divide-line rounded-md border border-line">
             {onWall.map((feed, index) => (
               <li key={feed.id} className="flex items-center gap-2 px-3 py-2">
-                <span className="w-12 shrink-0 font-mono text-[11px] text-muted">{channelLabel(index + 1)}</span>
+                <span className="w-12 shrink-0 font-mono text-[11px] text-muted">
+                  {channelLabel(index + 1)}
+                </span>
                 <FeedLabel feed={feed} />
                 <div className="flex shrink-0 gap-1">
-                  <IconButton label={`Move ${feed.name} up`} disabled={index === 0} onClick={() => move(index, -1)}>
+                  <IconButton
+                    label={`Move ${feed.name} up`}
+                    disabled={index === 0}
+                    onClick={() => move(index, -1)}
+                  >
                     ↑
                   </IconButton>
                   <IconButton
@@ -85,7 +94,10 @@ export function ChannelsPanel({ feeds, onChange, onClose }: ChannelsPanelProps) 
               {list.map((feed) => (
                 <li key={feed.id} className="flex items-center gap-2 px-3 py-2">
                   <FeedLabel feed={feed} />
-                  <IconButton label={`Add ${feed.name}`} onClick={() => onChange([...feeds, feed.id])}>
+                  <IconButton
+                    label={`Add ${feed.name}`}
+                    onClick={() => onChange([...feeds, feed.id])}
+                  >
                     +
                   </IconButton>
                 </li>

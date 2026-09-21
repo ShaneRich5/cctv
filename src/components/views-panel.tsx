@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { savedViewState, type SavedView } from "../lib/storage";
 import { shareUrl, viewCode, type ViewState } from "../lib/view";
-import { Drawer, Section } from "./Drawer";
+import { Drawer, Section } from "./drawer";
 
 interface ViewsPanelProps {
   view: ViewState;
@@ -16,19 +16,34 @@ interface ViewsPanelProps {
 
 const savedDate = new Intl.DateTimeFormat(undefined, { dateStyle: "medium", timeStyle: "short" });
 
-export function ViewsPanel({ view, saved, onSave, onLoad, onDelete, onCopy, onReset, onClose }: ViewsPanelProps) {
+export function ViewsPanel({
+  view,
+  saved,
+  onSave,
+  onLoad,
+  onDelete,
+  onCopy,
+  onReset,
+  onClose,
+}: ViewsPanelProps) {
   const code = viewCode(view);
   const url = shareUrl({ ...view, focus: null });
   const current = saved.find((entry) => entry.code === code);
   const [name, setName] = useState(current?.name ?? "");
   const canNativeShare = typeof navigator.share === "function";
 
+  const nativeShare = () => {
+    navigator.share({ title: "JA·CCTV view", url }).catch(() => {
+      // Closing the share sheet rejects the promise; there's nothing to handle.
+    });
+  };
+
   return (
     <Drawer title="Save & share" subtitle={`Current view · ${code}`} onClose={onClose}>
       <Section title="Share link">
         <p className="mb-2 text-sm text-muted">
-          The link spells out this exact wall: feeds, order, layout and mode. The same view always gives the same
-          link, and nothing is stored on a server.
+          The link spells out this exact wall: feeds, order, layout and mode. The same view always
+          gives the same link, and nothing is stored on a server.
         </p>
         <div className="flex gap-2">
           <input
@@ -43,11 +58,7 @@ export function ViewsPanel({ view, saved, onSave, onLoad, onDelete, onCopy, onRe
           </button>
         </div>
         {canNativeShare && (
-          <button
-            type="button"
-            className="btn mt-2"
-            onClick={() => navigator.share({ title: "JA·CCTV view", url }).catch(() => {})}
-          >
+          <button type="button" className="btn mt-2" onClick={nativeShare}>
             Share…
           </button>
         )}
@@ -74,8 +85,8 @@ export function ViewsPanel({ view, saved, onSave, onLoad, onDelete, onCopy, onRe
           </button>
         </form>
         <p className="mt-2 text-xs text-muted">
-          Saved views stay in this browser's local storage. The most recently saved one opens automatically when you
-          visit without a link.
+          Saved views stay in this browser's local storage. The most recently saved one opens
+          automatically when you visit without a link.
         </p>
       </Section>
 
@@ -92,11 +103,13 @@ export function ViewsPanel({ view, saved, onSave, onLoad, onDelete, onCopy, onRe
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-ink">
                       {entry.name}
-                      {isCurrent && <span className="ml-2 text-xs font-normal text-accent">current</span>}
+                      {isCurrent && (
+                        <span className="ml-2 text-xs font-normal text-accent">current</span>
+                      )}
                     </p>
                     <p className="truncate text-xs text-muted">
-                      {entry.code} · {state?.feeds.length ?? 0} feeds · {state?.mode === "grid" ? "Grid" : "CCTV"} ·{" "}
-                      {savedDate.format(entry.savedAt)}
+                      {entry.code} · {state?.feeds.length ?? 0} feeds ·{" "}
+                      {state?.mode === "grid" ? "Grid" : "CCTV"} · {savedDate.format(entry.savedAt)}
                     </p>
                   </div>
                   <button

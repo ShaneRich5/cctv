@@ -282,15 +282,33 @@ body {
   }
 
   @keyframes noise-shift {
-    0% { background-position: 0 0; }
-    12% { background-position: -61px 37px; }
-    25% { background-position: 83px -19px; }
-    37% { background-position: -17px -92px; }
-    50% { background-position: 44px 71px; }
-    62% { background-position: -98px 12px; }
-    75% { background-position: 29px -57px; }
-    87% { background-position: -73px 88px; }
-    100% { background-position: 0 0; }
+    0% {
+      background-position: 0 0;
+    }
+    12% {
+      background-position: -61px 37px;
+    }
+    25% {
+      background-position: 83px -19px;
+    }
+    37% {
+      background-position: -17px -92px;
+    }
+    50% {
+      background-position: 44px 71px;
+    }
+    62% {
+      background-position: -98px 12px;
+    }
+    75% {
+      background-position: 29px -57px;
+    }
+    87% {
+      background-position: -73px 88px;
+    }
+    100% {
+      background-position: 0 0;
+    }
   }
 
   /* A faint bright band that rolls down the screen. */
@@ -307,8 +325,12 @@ body {
   }
 
   @keyframes roll {
-    from { background-position: 0 -45%; }
-    to { background-position: 0 145%; }
+    from {
+      background-position: 0 -45%;
+    }
+    to {
+      background-position: 0 145%;
+    }
   }
 
   /* The unreliable monitors: intermittent flicker and horizontal jitter. */
@@ -319,24 +341,57 @@ body {
   }
 
   @keyframes flicker {
-    0%, 100% { opacity: 1; }
-    7% { opacity: 0.55; }
-    8% { opacity: 1; }
-    33% { opacity: 0.82; }
-    34% { opacity: 1; }
-    61% { opacity: 0.4; }
-    62% { opacity: 0.9; }
-    63% { opacity: 1; }
-    88% { opacity: 0.7; }
-    89% { opacity: 1; }
+    0%,
+    100% {
+      opacity: 1;
+    }
+    7% {
+      opacity: 0.55;
+    }
+    8% {
+      opacity: 1;
+    }
+    33% {
+      opacity: 0.82;
+    }
+    34% {
+      opacity: 1;
+    }
+    61% {
+      opacity: 0.4;
+    }
+    62% {
+      opacity: 0.9;
+    }
+    63% {
+      opacity: 1;
+    }
+    88% {
+      opacity: 0.7;
+    }
+    89% {
+      opacity: 1;
+    }
   }
 
   @keyframes jitter {
-    0%, 90%, 100% { transform: none; }
-    91% { transform: translateX(-2.5%) skewX(-3deg); }
-    93% { transform: translate(1.5%, 1%); }
-    95% { transform: translateY(-3%); }
-    96% { transform: none; }
+    0%,
+    90%,
+    100% {
+      transform: none;
+    }
+    91% {
+      transform: translateX(-2.5%) skewX(-3deg);
+    }
+    93% {
+      transform: translate(1.5%, 1%);
+    }
+    95% {
+      transform: translateY(-3%);
+    }
+    96% {
+      transform: none;
+    }
   }
 
   /* Signal loss: the picture tears, then static takes over. */
@@ -345,11 +400,26 @@ body {
   }
 
   @keyframes signal-drop {
-    0% { opacity: 0; }
-    15% { opacity: 1; clip-path: inset(38% 0 40% 0); transform: translateX(-6%); }
-    30% { clip-path: inset(8% 0 66% 0); transform: translateX(5%); }
-    45% { clip-path: inset(55% 0 12% 0); transform: translateX(-3%); }
-    60% { clip-path: none; transform: none; }
+    0% {
+      opacity: 0;
+    }
+    15% {
+      opacity: 1;
+      clip-path: inset(38% 0 40% 0);
+      transform: translateX(-6%);
+    }
+    30% {
+      clip-path: inset(8% 0 66% 0);
+      transform: translateX(5%);
+    }
+    45% {
+      clip-path: inset(55% 0 12% 0);
+      transform: translateX(-3%);
+    }
+    60% {
+      clip-path: none;
+      transform: none;
+    }
   }
 
   /* Recovery: the picture rolls back into place, vertical-hold style. */
@@ -358,10 +428,20 @@ body {
   }
 
   @keyframes resync {
-    0% { transform: translateY(-70%); filter: brightness(1.8); }
-    45% { transform: translateY(12%); }
-    70% { transform: translateY(-3%); filter: brightness(1.1); }
-    100% { transform: none; }
+    0% {
+      transform: translateY(-70%);
+      filter: brightness(1.8);
+    }
+    45% {
+      transform: translateY(12%);
+    }
+    70% {
+      transform: translateY(-3%);
+      filter: brightness(1.1);
+    }
+    100% {
+      transform: none;
+    }
   }
 
   /* Channel change in the focus view. */
@@ -370,8 +450,14 @@ body {
   }
 
   @keyframes switch-burst {
-    0%, 40% { opacity: 1; }
-    100% { opacity: 0; visibility: hidden; }
+    0%,
+    40% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+      visibility: hidden;
+    }
   }
 
   .rec-dot {
@@ -388,7 +474,9 @@ body {
   }
 
   @keyframes blink {
-    50% { opacity: 0; }
+    50% {
+      opacity: 0;
+    }
   }
 
   /* On-screen display text. Scales with the monitor via container units. */

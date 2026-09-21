@@ -11,17 +11,21 @@ export interface SavedView {
 
 const KEY = "ja-cctv:saved-views";
 
+function isSavedView(value: unknown): value is SavedView {
+  if (typeof value !== "object" || value === null) return false;
+  const entry = value as Record<string, unknown>;
+  return (
+    typeof entry.code === "string" &&
+    typeof entry.name === "string" &&
+    typeof entry.encoded === "string" &&
+    typeof entry.savedAt === "number"
+  );
+}
+
 export function loadSavedViews(): SavedView[] {
   try {
     const parsed: unknown = JSON.parse(localStorage.getItem(KEY) ?? "[]");
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (item): item is SavedView =>
-        typeof item?.code === "string" &&
-        typeof item?.name === "string" &&
-        typeof item?.encoded === "string" &&
-        typeof item?.savedAt === "number",
-    );
+    return Array.isArray(parsed) ? parsed.filter(isSavedView) : [];
   } catch {
     return [];
   }

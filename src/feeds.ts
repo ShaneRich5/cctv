@@ -187,7 +187,8 @@ export const FEEDS: Feed[] = [
       tileTransform: JAMAICA_CROP,
     },
     provider: NOAA_STAR,
-    sourceUrl: "https://www.star.nesdis.noaa.gov/GOES/sector_band.php?sat=G19&sector=car&band=GEOCOLOR",
+    sourceUrl:
+      "https://www.star.nesdis.noaa.gov/GOES/sector_band.php?sat=G19&sector=car&band=GEOCOLOR",
   },
   {
     id: "sir",

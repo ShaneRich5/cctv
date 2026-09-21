@@ -46,7 +46,15 @@ export function Drawer({
   );
 }
 
-export function Section({ title, children, actions }: { title: string; children: ReactNode; actions?: ReactNode }) {
+export function Section({
+  title,
+  children,
+  actions,
+}: {
+  title: string;
+  children: ReactNode;
+  actions?: ReactNode;
+}) {
   return (
     <section className="mb-6">
       <div className="mb-2 flex items-center justify-between gap-2">

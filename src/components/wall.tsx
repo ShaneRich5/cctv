@@ -2,8 +2,8 @@ import { useEffect, useState, type CSSProperties } from "react";
 import { FEED_BY_ID, type Feed, type FeedStatus } from "../feeds";
 import type { SignalEvent } from "../lib/hooks";
 import { effectiveColumns, type ViewState } from "../lib/view";
-import { FeedPlayer } from "./FeedPlayer";
-import { CrtLayers, DeadMonitor, Osd, StaticScreen } from "./Monitor";
+import { FeedPlayer } from "./feed-player";
+import { CrtLayers, DeadMonitor, Osd, StaticScreen } from "./monitor";
 
 interface WallProps {
   view: ViewState;
@@ -15,7 +15,15 @@ interface WallProps {
   onOpenChannels: () => void;
 }
 
-export function Wall({ view, width, signals, unstable, onOpen, onStatus, onOpenChannels }: WallProps) {
+export function Wall({
+  view,
+  width,
+  signals,
+  unstable,
+  onOpen,
+  onStatus,
+  onOpenChannels,
+}: WallProps) {
   const feeds = view.feeds.flatMap((id) => FEED_BY_ID.get(id) ?? []);
   const cctv = view.mode === "cctv";
 
@@ -123,7 +131,7 @@ function FeedTile({ feed, channel, cctv, unstable, signal, onOpen, onStatus }: T
           </div>
         )}
         {!cctv && status === "live" && feed.category !== "weather" && (
-          <span className="absolute bottom-2 right-2 flex items-center gap-1.5 rounded bg-black/65 px-1.5 py-0.5 text-[11px] font-semibold tracking-wide text-white">
+          <span className="absolute right-2 bottom-2 flex items-center gap-1.5 rounded bg-black/65 px-1.5 py-0.5 text-[11px] font-semibold tracking-wide text-white">
             <span className="size-1.5 rounded-full bg-red-500" />
             LIVE
           </span>

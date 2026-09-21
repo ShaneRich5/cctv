@@ -17,12 +17,22 @@ export function Header({ view, onMode, onCols, onChannels, onViews }: HeaderProp
     <header className="sticky top-0 z-30 border-b border-line bg-bg/90 backdrop-blur">
       <div className="flex flex-wrap items-center gap-x-6 gap-y-2 px-4 py-2.5">
         <div className="flex items-center gap-2.5">
-          {cctv ? <span className="rec-dot text-sm" /> : <span className="size-2.5 rounded-full bg-red-500" />}
-          <h1 className={cctv ? "font-mono text-sm font-semibold tracking-[0.25em] text-accent" : "font-semibold"}>
+          {cctv ? (
+            <span className="rec-dot text-sm" />
+          ) : (
+            <span className="size-2.5 rounded-full bg-red-500" />
+          )}
+          <h1
+            className={
+              cctv
+                ? "font-mono text-sm font-semibold tracking-[0.25em] text-accent"
+                : "font-semibold"
+            }
+          >
             JA·CCTV
           </h1>
           <span
-            className={`hidden text-muted xl:inline ${cctv ? "font-mono text-[11px] uppercase tracking-widest" : "text-sm"}`}
+            className={`hidden text-muted xl:inline ${cctv ? "font-mono text-[11px] tracking-widest uppercase" : "text-sm"}`}
           >
             {cctv ? "Public camera network // Jamaica" : "Public live cameras across Jamaica"}
           </span>
@@ -34,7 +44,10 @@ export function Header({ view, onMode, onCols, onChannels, onViews }: HeaderProp
           About
         </a>
 
-        <nav aria-label="View controls" className="flex w-full flex-wrap items-center gap-2 sm:ml-auto sm:w-auto">
+        <nav
+          aria-label="View controls"
+          className="flex w-full flex-wrap items-center gap-2 sm:ml-auto sm:w-auto"
+        >
           <Segmented<Mode>
             label="Display mode"
             value={view.mode}
@@ -49,7 +62,10 @@ export function Header({ view, onMode, onCols, onChannels, onViews }: HeaderProp
             className="hidden lg:inline-flex"
             value={view.cols}
             onChange={onCols}
-            options={COLUMN_CHOICES.map((cols) => ({ value: cols, label: cols ? `${cols}` : "Auto" }))}
+            options={COLUMN_CHOICES.map((cols) => ({
+              value: cols,
+              label: cols ? `${cols}` : "Auto",
+            }))}
           />
           <button type="button" className="btn" onClick={onChannels}>
             Channels <span className="text-muted">{view.feeds.length}</span>
@@ -72,7 +88,7 @@ function ConsoleClock() {
   return (
     <div className="hidden items-baseline gap-3 font-mono text-xs tracking-widest text-muted md:flex">
       <span>{date}</span>
-      <span className="text-base font-medium tabular-nums text-accent [text-shadow:0_0_8px_rgb(125_255_160/0.45)]">
+      <span className="text-base font-medium text-accent tabular-nums [text-shadow:0_0_8px_rgb(125_255_160/0.45)]">
         {time}
       </span>
       <span>UTC−5 KINGSTON</span>
@@ -122,17 +138,23 @@ export function StatusBar({ view, code, live, connecting, offline }: StatusBarPr
   return (
     <footer
       className={`flex flex-wrap items-center gap-x-5 gap-y-1 border-t border-line px-4 py-2 text-muted ${
-        cctv ? "font-mono text-[11px] uppercase tracking-widest" : "text-xs"
+        cctv ? "font-mono text-[11px] tracking-widest uppercase" : "text-xs"
       }`}
     >
       <span>
         <span className="text-accent">●</span> {live} live
       </span>
       {connecting > 0 && <span>◌ {connecting} connecting</span>}
-      {offline > 0 && <span className="text-alert">✕ {offline} {cctv ? "no signal" : "offline"}</span>}
+      {offline > 0 && (
+        <span className="text-alert">
+          ✕ {offline} {cctv ? "no signal" : "offline"}
+        </span>
+      )}
       <span>View {code}</span>
       <span className="ml-auto hidden md:inline">
-        {cctv ? "Select a monitor to focus · M switches mode" : "Select a feed to focus · M switches mode"}
+        {cctv
+          ? "Select a monitor to focus · M switches mode"
+          : "Select a feed to focus · M switches mode"}
       </span>
       <a className="underline-offset-2 hover:text-accent hover:underline" href={ABOUT_URL}>
         Sources
@@ -143,9 +165,12 @@ export function StatusBar({ view, code, live, connecting, offline }: StatusBarPr
 
 export function Toast({ message }: { message: string | null }) {
   return (
-    <div aria-live="polite" className="pointer-events-none fixed inset-x-0 bottom-12 z-[60] flex justify-center px-4">
+    <div
+      aria-live="polite"
+      className="pointer-events-none fixed inset-x-0 bottom-12 z-[60] flex justify-center px-4"
+    >
       {message && (
-        <div className="rounded-md border border-line bg-surface px-4 py-2 text-sm text-ink shadow-lg in-data-[mode=cctv]:font-mono in-data-[mode=cctv]:uppercase in-data-[mode=cctv]:tracking-wider">
+        <div className="rounded-md border border-line bg-surface px-4 py-2 text-sm text-ink shadow-lg in-data-[mode=cctv]:font-mono in-data-[mode=cctv]:tracking-wider in-data-[mode=cctv]:uppercase">
           {message}
         </div>
       )}
