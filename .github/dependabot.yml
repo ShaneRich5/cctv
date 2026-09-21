@@ -1,0 +1,41 @@
+# Weekly dependency update pull requests. Every PR runs the full pipeline
+# (format, lint, type-check, test, build) before it can be merged.
+#
+# Minor and patch bumps arrive together as one PR per ecosystem. Major versions
+# get their own PRs, since those can need migration work.
+# Security fixes are separate: they're opened as soon as an alert appears.
+version: 2
+updates:
+  - package-ecosystem: npm
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: America/Jamaica
+    # Skip versions published in the last few days, so a compromised release
+    # is likely to be caught and pulled before it reaches this repo.
+    cooldown:
+      default-days: 3
+      semver-major-days: 7
+    groups:
+      npm-minor-and-patch:
+        patterns: ["*"]
+        update-types: [minor, patch]
+    ignore:
+      # Node types track the Node version the project runs on (24, see .nvmrc).
+      - dependency-name: "@types/node"
+        update-types: [version-update:semver-major]
+    commit-message:
+      prefix: "chore(deps)"
+
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      timezone: America/Jamaica
+    groups:
+      github-actions:
+        patterns: ["*"]
+    commit-message:
+      prefix: "chore(ci)"

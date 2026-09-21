@@ -91,6 +91,10 @@ A newer push cancels an older run of the same pull request. Deploys are never ca
 
 `npm run check-feeds` isn't part of the pipeline, because it depends on third-party streams being up at that moment.
 
+### Dependency updates
+
+Dependabot keeps dependencies current ([`.github/dependabot.yml`](.github/dependabot.yml)). Every Monday it opens one pull request with the week's minor and patch updates for npm, one for GitHub Actions, and a separate pull request for each major version. It skips releases published in the last few days, as a guard against compromised packages. Security fixes arrive as soon as an alert is raised. Every one of these pull requests runs the pipeline above.
+
 ## Feeds
 
 All feeds live in [`src/feeds.ts`](src/feeds.ts). Each entry needs a public, embeddable source and credit to its publisher. Supported source kinds:
