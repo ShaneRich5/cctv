@@ -4,35 +4,20 @@
 //
 //   npm run check-feeds        (Node 24 runs this TypeScript file directly)
 import { FEEDS, type Feed } from "../src/feeds.ts";
-
-const HEADERS = {
-  "User-Agent":
-    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0 Safari/537.36",
-  "Accept-Language": "en-US",
-  Cookie: "CONSENT=YES+1",
-};
-
-async function checkYouTube(videoId: string): Promise<string | null> {
-  const response = await fetch(`https://www.youtube.com/watch?v=${videoId}`, { headers: HEADERS });
-  const html = await response.text();
-  const status = /"playabilityStatus":\{"status":"([A-Z_]+)"/.exec(html)?.[1] ?? "UNKNOWN";
-  if (status !== "OK") return `not playable (${status})`;
-  if (!html.includes('"playableInEmbed":true')) return "embedding disabled";
-  if (!html.includes('"isLiveNow":true')) return "not live right now";
-  return null;
-}
-
-async function checkUrl(url: string): Promise<string | null> {
-  const response = await fetch(url, { method: "HEAD", headers: HEADERS });
-  return response.ok ? null : `HTTP ${response.status}`;
-}
+import { HEADERS, inspectVideo } from "./lib/youtube.ts";
 
 async function check(feed: Feed): Promise<string | null> {
   const { source } = feed;
   try {
-    return source.kind === "youtube"
-      ? await checkYouTube(source.videoId)
-      : await checkUrl(source.url);
+    if (source.kind !== "youtube") {
+      const response = await fetch(source.url, { method: "HEAD", headers: HEADERS });
+      return response.ok ? null : `HTTP ${response.status}`;
+    }
+    const video = await inspectVideo(source.videoId);
+    if (video.playability !== "OK") return `not playable (${video.playability})`;
+    if (!video.embeddable) return "embedding disabled";
+    if (!video.live) return "not live right now";
+    return null;
   } catch (error) {
     return error instanceof Error ? error.message : String(error);
   }
@@ -49,5 +34,8 @@ for (const feed of FEEDS) {
 
 if (failures) {
   console.log(`\n${failures} feed(s) need attention.`);
+  console.log(
+    "`npm run list-streams` shows the publishers' current streams, to find replacements.",
+  );
   process.exitCode = 1;
 }

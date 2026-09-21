@@ -18,7 +18,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "verify": "npm run format:check && npm run lint && npm run typecheck && npm run test && npm run build",
-    "check-feeds": "node scripts/check-feeds.ts"
+    "check-feeds": "node scripts/check-feeds.ts",
+    "list-streams": "node scripts/list-streams.ts"
   },
   "dependencies": {
     "react": "^19.1.1",

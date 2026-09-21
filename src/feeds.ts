@@ -23,6 +23,8 @@ export type FeedStatus = "connecting" | "live" | "offline";
 export interface Provider {
   name: string;
   url: string;
+  // One sentence about the publisher, shown on the About page.
+  note: string;
 }
 
 export interface Feed {
@@ -40,16 +42,19 @@ export interface Feed {
 const SEE_JAMAICA: Provider = {
   name: "See Jamaica",
   url: "https://www.youtube.com/@SeeJamaica/streams",
+  note: "An independent network streaming public street views around the island 24/7 on YouTube. See seejm.com.",
 };
 
 const SEE_JAMAICA_LIVE: Provider = {
   name: "See Jamaica Live",
   url: "https://www.youtube.com/@SeeJamaicaLive/streams",
+  note: "See Jamaica's second YouTube channel, carrying more of its 24/7 street and harbour cameras.",
 };
 
 const NOAA_STAR: Provider = {
   name: "NOAA / NESDIS STAR",
   url: "https://www.star.nesdis.noaa.gov/GOES/sector.php?sat=G19&sector=car",
+  note: "GOES-19 satellite imagery of the Caribbean from the US National Oceanic and Atmospheric Administration. It is a US government work in the public domain.",
 };
 
 const youtube = (videoId: string) => ({
@@ -171,6 +176,7 @@ export const FEEDS: Feed[] = [
     provider: {
       name: "CocoLaPalm Seaside Resort / EarthCam",
       url: "https://cocolapalm.com/coco-beach-livestream/",
+      note: "A beach camera on Seven Mile Beach in Negril, which the resort publishes through EarthCam.",
     },
     sourceUrl: "https://cocolapalm.com/coco-beach-livestream/",
   },

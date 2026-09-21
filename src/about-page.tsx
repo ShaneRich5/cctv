@@ -10,17 +10,6 @@ const SOURCE_TYPES: Record<FeedSource["kind"], string> = {
   image: "Satellite still",
 };
 
-const PROVIDER_NOTES: Record<string, string> = {
-  "See Jamaica":
-    "An independent network streaming public street views around the island 24/7 on YouTube. See seejm.com.",
-  "See Jamaica Live":
-    "See Jamaica's second YouTube channel, carrying more of its 24/7 street and harbour cameras.",
-  "CocoLaPalm Seaside Resort / EarthCam":
-    "A beach camera on Seven Mile Beach in Negril, which the resort publishes through EarthCam.",
-  "NOAA / NESDIS STAR":
-    "GOES-19 satellite imagery of the Caribbean from the US National Oceanic and Atmospheric Administration. It is a US government work in the public domain.",
-};
-
 export default function About() {
   return (
     <div className="min-h-dvh bg-bg text-ink">
@@ -82,7 +71,7 @@ export default function About() {
                 >
                   {provider.name}
                 </a>
-                <p className="text-muted">{PROVIDER_NOTES[provider.name]}</p>
+                <p className="text-muted">{provider.note}</p>
               </li>
             ))}
           </ul>

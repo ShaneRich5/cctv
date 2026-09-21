@@ -57,6 +57,7 @@ Before pushing, run `npm run verify`. It runs the same checks as the pipeline, i
 | `npm run typecheck`               | `tsc -b` for the app and the Node tooling                                                                |
 | `npm test` / `test:watch`         | Vitest unit tests                                                                                        |
 | `npm run check-feeds`             | Check that every feed is still live and embeddable                                                       |
+| `npm run list-streams`            | List the publishers' current YouTube streams, to find a replacement when a feed goes offline             |
 
 ## Project structure
 
@@ -100,7 +101,7 @@ All feeds live in [`src/feeds.ts`](src/feeds.ts). Each entry needs a public, emb
 | `iframe`  | publisher-provided embeds such as EarthCam   |
 | `image`   | periodically refreshed stills (NOAA GOES)    |
 
-Feed `id`s are written into share links and saved views. Never rename or reuse one; give a new feed a new id. YouTube live stream IDs change when a publisher restarts a stream. When a monitor stays on NO SIGNAL, run `npm run check-feeds` and update the `videoId` from the publisher's streams page.
+Feed `id`s are written into share links and saved views. Never rename or reuse one; give a new feed a new id. YouTube live stream IDs change when a publisher restarts a stream. When a monitor stays on NO SIGNAL, run `npm run check-feeds`, find the replacement with `npm run list-streams`, and update that feed's `videoId`. The full procedure, including how to add or retire a feed, is in [`.claude/skills/update-feeds/SKILL.md`](.claude/skills/update-feeds/SKILL.md). AI coding agents follow it, and it's written to be readable by people too.
 
 ## View links
 
