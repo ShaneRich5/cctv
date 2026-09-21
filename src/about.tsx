@@ -1,13 +1,10 @@
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
-import App from "./app.tsx";
-import { installNoiseTexture } from "./lib/noise.ts";
-
-installNoiseTexture();
+import About from "./about-page.tsx";
 
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
-    <App />
+    <About />
   </StrictMode>
 );

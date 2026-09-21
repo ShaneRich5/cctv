@@ -1,1 +1,457 @@
 @import "tailwindcss";
+
+@theme {
+  --font-osd: "VT323", ui-monospace, monospace;
+  --font-mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  --font-sans: "IBM Plex Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* Semantic colours. Components use bg-bg, text-ink, border-line, etc. and the
+   palette underneath swaps between the plain grid theme and the CCTV console. */
+@theme inline {
+  --color-bg: var(--bg);
+  --color-surface: var(--surface);
+  --color-raised: var(--raised);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-line: var(--line);
+  --color-accent: var(--accent);
+  --color-accent-ink: var(--accent-ink);
+  --color-alert: var(--alert);
+}
+
+:root {
+  color-scheme: light;
+  --bg: #f2f3f5;
+  --surface: #ffffff;
+  --raised: #e8eaee;
+  --ink: #15171c;
+  --muted: #646a74;
+  --line: #dcdfe5;
+  --accent: #0f766e;
+  --accent-ink: #ffffff;
+  --alert: #d92d20;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --bg: #0b0c0f;
+    --surface: #15171b;
+    --raised: #20232a;
+    --ink: #eceef2;
+    --muted: #8d929c;
+    --line: #2a2d34;
+    --accent: #2dd4bf;
+    --accent-ink: #042f2e;
+    --alert: #f97066;
+  }
+}
+
+/* The CCTV console is always dark, whatever the system theme. */
+:root[data-mode="cctv"] {
+  color-scheme: dark;
+  --bg: #020403;
+  --surface: #06100a;
+  --raised: #0c1c12;
+  --ink: #a9f5be;
+  --muted: #5a8c68;
+  --line: #193524;
+  --accent: #7dffa0;
+  --accent-ink: #03170b;
+  --alert: #ff3b30;
+}
+
+html {
+  background: var(--bg);
+  color: var(--ink);
+}
+
+body {
+  margin: 0;
+  background: var(--bg);
+  -webkit-font-smoothing: antialiased;
+}
+
+@layer components {
+  /* Console buttons: square, uppercase and mono in CCTV mode; rounded in grid mode. */
+  .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    min-height: 2rem;
+    padding: 0.25rem 0.7rem;
+    border: 1px solid var(--line);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    color: var(--ink);
+    font-size: 0.8125rem;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+    cursor: pointer;
+    transition:
+      background-color 120ms,
+      border-color 120ms,
+      color 120ms;
+  }
+  .btn:hover {
+    background: var(--raised);
+  }
+  .btn:focus-visible,
+  .seg button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  .btn-primary {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--accent-ink);
+  }
+  .btn-primary:hover {
+    background: var(--accent);
+    filter: brightness(1.1);
+  }
+
+  .seg {
+    display: inline-flex;
+    border: 1px solid var(--line);
+    border-radius: 0.5rem;
+    background: var(--surface);
+    padding: 2px;
+    gap: 2px;
+  }
+  .seg button {
+    min-height: calc(2rem - 6px);
+    padding: 0.2rem 0.6rem;
+    border-radius: 0.375rem;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--muted);
+    cursor: pointer;
+  }
+  .seg button:hover {
+    color: var(--ink);
+  }
+  .seg button[aria-pressed="true"] {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+
+  [data-mode="cctv"] .btn,
+  [data-mode="cctv"] .seg,
+  [data-mode="cctv"] .seg button {
+    border-radius: 2px;
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  [data-mode="cctv"] .btn:hover,
+  [data-mode="cctv"] .seg button:hover {
+    color: var(--accent);
+    text-shadow: 0 0 6px rgb(125 255 160 / 0.5);
+  }
+  [data-mode="cctv"] .btn-primary:hover {
+    color: var(--accent-ink);
+    text-shadow: none;
+  }
+
+  .panel-title {
+    font-size: 1rem;
+    font-weight: 600;
+  }
+  .section-title {
+    font-size: 0.72rem;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+  [data-mode="cctv"] .panel-title,
+  [data-mode="cctv"] .section-title {
+    font-family: var(--font-mono);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+  }
+  [data-mode="cctv"] .panel-title {
+    font-size: 0.875rem;
+    color: var(--accent);
+  }
+
+  .field {
+    width: 100%;
+    min-height: 2.25rem;
+    padding: 0.4rem 0.6rem;
+    border: 1px solid var(--line);
+    border-radius: 0.5rem;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 0.8125rem;
+  }
+  .field:focus {
+    outline: 2px solid var(--accent);
+    outline-offset: 1px;
+  }
+  [data-mode="cctv"] .field {
+    border-radius: 2px;
+    font-family: var(--font-mono);
+  }
+
+  /* ---------------------------------------------------------------- wall -- */
+
+  .wall {
+    --gap: 0.5rem;
+    grid-template-columns: repeat(var(--cols), minmax(0, 1fr));
+    gap: var(--gap);
+  }
+
+  /* On larger screens the CCTV wall shrinks to fit the viewport height, like a
+     bank of monitors, instead of scrolling. */
+  @media (min-width: 1024px) {
+    .wall-fit {
+      --chrome: 7.5rem;
+      max-width: calc(
+        (100dvh - var(--chrome) - (var(--rows) - 1) * var(--gap)) / var(--rows) * 16 / 9 *
+          var(--cols) + (var(--cols) - 1) * var(--gap)
+      );
+    }
+  }
+
+  .tile {
+    container-type: inline-size;
+  }
+
+  /* ------------------------------------------------------------ monitors -- */
+
+  .crt-screen {
+    background: #000;
+    border-radius: 6px / 8px;
+    box-shadow:
+      0 0 0 1px #1d2b22,
+      0 0 0 4px #070a08,
+      0 0 0 5px #151c17,
+      0 10px 24px rgb(0 0 0 / 0.6);
+  }
+
+  /* Desaturated, green-tinted picture. */
+  .cctv-feed {
+    filter: grayscale(1) sepia(0.5) hue-rotate(72deg) saturate(1.5) contrast(1.25) brightness(0.9);
+  }
+
+  /* Zoom wall streams slightly so their burned-in captions sit off-screen
+     instead of under the OSD. */
+  .feed-layer.cctv-feed .yt-frame {
+    transform: scale(1.12);
+  }
+
+  .crt-scanlines {
+    background: repeating-linear-gradient(
+      to bottom,
+      rgb(0 0 0 / 0) 0 2px,
+      rgb(0 0 0 / 0.3) 2px 3px
+    );
+  }
+
+  .crt-vignette {
+    background: radial-gradient(ellipse at center, transparent 55%, rgb(0 0 0 / 0.6) 100%);
+    box-shadow: inset 0 0 3.5rem rgb(0 0 0 / 0.7);
+  }
+
+  .crt-glass {
+    background: linear-gradient(160deg, rgb(255 255 255 / 0.07), transparent 38%);
+  }
+
+  .crt-grain {
+    background-image: var(--noise);
+    background-size: 180px 180px;
+    opacity: 0.09;
+    mix-blend-mode: screen;
+    animation: noise-shift 0.6s steps(1) infinite;
+  }
+
+  .tv-static {
+    background-color: #0d0f0e;
+    background-image: var(--noise);
+    background-size: 240px 240px;
+    image-rendering: pixelated;
+    animation: noise-shift 0.28s steps(1) infinite;
+  }
+  .tv-static-faint {
+    opacity: 0.55;
+  }
+
+  @keyframes noise-shift {
+    0% { background-position: 0 0; }
+    12% { background-position: -61px 37px; }
+    25% { background-position: 83px -19px; }
+    37% { background-position: -17px -92px; }
+    50% { background-position: 44px 71px; }
+    62% { background-position: -98px 12px; }
+    75% { background-position: 29px -57px; }
+    87% { background-position: -73px 88px; }
+    100% { background-position: 0 0; }
+  }
+
+  /* A faint bright band that rolls down the screen. */
+  .crt-roll {
+    background-image: linear-gradient(
+      to bottom,
+      transparent,
+      rgb(200 255 215 / 0.07) 50%,
+      transparent
+    );
+    background-size: 100% 28%;
+    background-repeat: no-repeat;
+    animation: roll 6.5s linear infinite;
+  }
+
+  @keyframes roll {
+    from { background-position: 0 -45%; }
+    to { background-position: 0 145%; }
+  }
+
+  /* The unreliable monitors: intermittent flicker and horizontal jitter. */
+  .crt-unstable .feed-inner {
+    animation:
+      flicker 4.3s steps(1) infinite,
+      jitter 9s steps(1) infinite;
+  }
+
+  @keyframes flicker {
+    0%, 100% { opacity: 1; }
+    7% { opacity: 0.55; }
+    8% { opacity: 1; }
+    33% { opacity: 0.82; }
+    34% { opacity: 1; }
+    61% { opacity: 0.4; }
+    62% { opacity: 0.9; }
+    63% { opacity: 1; }
+    88% { opacity: 0.7; }
+    89% { opacity: 1; }
+  }
+
+  @keyframes jitter {
+    0%, 90%, 100% { transform: none; }
+    91% { transform: translateX(-2.5%) skewX(-3deg); }
+    93% { transform: translate(1.5%, 1%); }
+    95% { transform: translateY(-3%); }
+    96% { transform: none; }
+  }
+
+  /* Signal loss: the picture tears, then static takes over. */
+  .signal-drop {
+    animation: signal-drop 0.55s steps(1) both;
+  }
+
+  @keyframes signal-drop {
+    0% { opacity: 0; }
+    15% { opacity: 1; clip-path: inset(38% 0 40% 0); transform: translateX(-6%); }
+    30% { clip-path: inset(8% 0 66% 0); transform: translateX(5%); }
+    45% { clip-path: inset(55% 0 12% 0); transform: translateX(-3%); }
+    60% { clip-path: none; transform: none; }
+  }
+
+  /* Recovery: the picture rolls back into place, vertical-hold style. */
+  .resync .feed-inner {
+    animation: resync 0.9s cubic-bezier(0.2, 0.7, 0.3, 1);
+  }
+
+  @keyframes resync {
+    0% { transform: translateY(-70%); filter: brightness(1.8); }
+    45% { transform: translateY(12%); }
+    70% { transform: translateY(-3%); filter: brightness(1.1); }
+    100% { transform: none; }
+  }
+
+  /* Channel change in the focus view. */
+  .switch-burst {
+    animation: switch-burst 0.5s steps(5) forwards;
+  }
+
+  @keyframes switch-burst {
+    0%, 40% { opacity: 1; }
+    100% { opacity: 0; visibility: hidden; }
+  }
+
+  .rec-dot {
+    width: 0.6em;
+    height: 0.6em;
+    border-radius: 50%;
+    background: #ff3b30;
+    box-shadow: 0 0 6px #ff3b30;
+    animation: blink 1.4s steps(1) infinite;
+  }
+
+  .blink {
+    animation: blink 1.1s steps(1) infinite;
+  }
+
+  @keyframes blink {
+    50% { opacity: 0; }
+  }
+
+  /* On-screen display text. Scales with the monitor via container units. */
+  .osd {
+    font-family: var(--font-osd);
+    font-size: clamp(13px, 4.6cqw, 30px);
+    line-height: 1;
+    letter-spacing: 0.04em;
+    color: #eafff0;
+    text-shadow:
+      0 0 4px rgb(150 255 180 / 0.6),
+      1px 1px 0 rgb(0 0 0 / 0.85);
+  }
+
+  .osd-banner {
+    font-family: var(--font-osd);
+    font-size: clamp(18px, 8cqw, 56px);
+    line-height: 1;
+    letter-spacing: 0.08em;
+    color: #f2fff5;
+    text-shadow:
+      0 0 8px rgb(150 255 180 / 0.7),
+      2px 2px 0 rgb(0 0 0 / 0.9);
+  }
+
+  .color-bars {
+    background: linear-gradient(
+      to right,
+      #bfbfbf 0 14.28%,
+      #bfbf00 0 28.57%,
+      #00bfbf 0 42.85%,
+      #00bf00 0 57.14%,
+      #bf00bf 0 71.42%,
+      #bf0000 0 85.71%,
+      #0000bf 0
+    );
+    filter: saturate(0.7) brightness(0.75);
+  }
+
+  .color-bars-low {
+    background: linear-gradient(
+      to right,
+      #00214c 0 17.8%,
+      #fff 0 35.6%,
+      #32006a 0 53.4%,
+      #131313 0
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .crt-grain,
+  .tv-static,
+  .crt-roll,
+  .crt-unstable .feed-inner,
+  .signal-drop,
+  .resync .feed-inner,
+  .switch-burst,
+  .rec-dot,
+  .blink {
+    animation: none;
+  }
+  .switch-burst {
+    display: none;
+  }
+}
